@@ -1,0 +1,3 @@
+node_modules/
+names.json  # Não suba os dados salvos (edite manualmente localmente)
+.env        # Arquivo de env vars locais (se criar)

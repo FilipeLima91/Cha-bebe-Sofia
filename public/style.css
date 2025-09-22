@@ -1,0 +1,276 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+/* Ursinhos, balões e nuvens decorativos */
+.bear {
+  width: 80px;
+  bottom: 10px;
+  left: 10px;
+  opacity: 0.3;
+}
+.bear2 {
+  width: 500px;
+  top: 120px;
+  right: 30px;
+  opacity: 0.2;
+}
+.balloon {
+  width: 60px;
+  top: 50px;
+  right: 20px;
+  opacity: 0.3;
+}
+.balloon2 {
+  width: 45px;
+  top: 150px;
+  left: 40px;
+  opacity: 0.25;
+}
+.cloud {
+  width: 120px;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0.2;
+}
+.cloud2 {
+  width: 90px;
+  top: 250px;
+  right: 15%;
+  opacity: 0.15;
+}
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif; 
+  background: linear-gradient(to bottom, #ffe4e6, #fff0f5);
+  color: #5a3e3e;
+  font: bold 16px Arial, sans-serif;
+}
+header {
+  background: #f8c8d8;
+  text-align: center;
+  padding: 2rem 1rem;
+  font-family: 'Pacifico', cursive;
+  font-size: 2.5rem;
+  color: #7a3e5a;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(122, 62, 90, 0.3);
+}
+main {
+  max-width: 900px;
+  margin: 2rem auto;
+  background: #fff0f5cc;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 0 15px #f8c8d8aa;
+}
+h2 {
+  color: #a85a7a;
+  margin-top: 2rem;
+  border-bottom: 2px solid #f8c8d8;
+  padding-bottom: 0.3rem;
+}
+.item-row {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+.item-label {
+  flex: 1 1 70%;
+  font-size: 1rem;
+}
+.input-name {
+  flex: 1 1 30%;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #f8c8d8;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+.input-name:focus {
+  outline: none;
+  border-color: #a85a7a;
+  box-shadow: 0 0 5px #a85a7a88;
+}
+button {
+  margin-top: 1.5rem;
+  background: #f8c8d8;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #7a3e5a;
+  transition: background 0.3s ease;
+}
+button:hover {
+  background: #a85a7a;
+  color: white;
+}
+.decoration {
+  position: fixed;
+  pointer-events: none;
+  user-select: none;
+}
+/* Ursinhos, balões e nuvens decorativos */
+.bear {
+  width: 600px;
+  bottom: 10px;
+  left: 10px;
+  opacity: 0.16;
+}
+.balloon {
+  width: 300px;
+  top: 50px;
+  right: 20px;
+  opacity: 0.3;
+}
+.cloud {
+  width: 150px;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0.3;
+}
+footer {
+  text-align: center;
+  margin: 3rem 0 1rem;
+  color: #a85a7a;
+  font-size: 0.9rem;
+}
+#listResults {
+  margin-top: 3rem;
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem 0;
+  flex-wrap: wrap;
+}
+.item-label {
+  flex: 1 1 70%;
+  font-size: 1rem;
+  min-width: 280px;
+}
+.input-name {
+  flex: 1 1 30%;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #f8c8d8;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  min-width: 120px;
+}
+footer {
+  text-align: center;
+  margin: 3rem 0 1rem;
+  color: #a85a7a;
+  font-size: 0.9rem;
+}
+#listResults {
+  margin-top: 3rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  header {
+    font-size: 2rem;
+    padding: 1.5rem 1rem;
+  }
+  main {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  .item-row {
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 1rem 0;
+  }
+  .item-label {
+    flex: 1 1 100%;
+    margin-bottom: 0.5rem;
+    min-width: auto;
+  }
+  .input-name {
+    flex: 1 1 100%;
+    margin-left: 0;
+    min-width: auto;
+  }
+  .decoration {
+    display: none; /* Esconde decorações em mobile para não atrapalhar */
+  }
+}
+.item-row {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem 0;
+  flex-wrap: wrap;
+}
+.item-label {
+  flex: 1 1 70%;
+  font-size: 1rem;
+  min-width: 280px;
+}
+.input-name {
+  flex: 1 1 30%;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #f8c8d8;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  min-width: 120px;
+}
+
+footer {
+  text-align: center;
+  margin: 3rem 0 1rem;
+  color: #a85a7a;
+  font-size: 0.9rem;
+}
+#listResults {
+  margin-top: 3rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  header {
+    font-size: 2rem;
+    padding: 1.5rem 1rem;
+  }
+  main {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  .item-row {
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 1rem 0;
+  }
+  .item-label {
+    flex: 1 1 100%;
+    margin-bottom: 0.5rem;
+    min-width: auto;
+  }
+  .input-name {
+    flex: 1 1 100%;
+    margin-left: 0;
+    min-width: auto;
+  }
+  .decoration {
+    display: none; /* Esconde decorações em mobile para não atrapalhar */
+  }
+}
+/* Itens indisponíveis (opcional: em vez de display: none, use isso no JS) */
+.item-row.unavailable {
+  opacity: 0.5;
+  background-color: #f0f0f0;
+  pointer-events: none; /* Impede cliques */
+}
+.item-row.unavailable input {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+}
