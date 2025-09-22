@@ -262,7 +262,8 @@ footer {
     min-width: auto;
   }
   .decoration {
-    display: none; /* Esconde decorações em mobile para não atrapalhar */
+    display:flex;
+    align-items:center; /* Esconde decorações em mobile para não atrapalhar */
   }
 }
 /* Itens indisponíveis (opcional: em vez de display: none, use isso no JS) */
