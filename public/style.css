@@ -113,6 +113,7 @@ button:hover {
 .decoration {
   position: fixed;
   pointer-events: none;
+  -webkit-user-select: none;
   user-select: none;
 }
 /* Ursinhos, balões e nuvens decorativos */
