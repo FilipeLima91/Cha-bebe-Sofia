@@ -15,8 +15,8 @@ app.use(cors());
 // Config Supabase (com fallback se env vars falharem)
 let supabase;
 try {
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+  const supabaseUrl = "https://ohzcmdmkeqabdcnurueh.supabase.co";
+  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oemNtZG1rZXFhYmRjbnVydWVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAyOTAwMjgsImV4cCI6MjA3NTg2NjAyOH0.YC8LwewsQAqoMjNx5jQMBhrEFv3VRyaBVghjjgqCkOw";
   if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error('Env vars Supabase não configuradas');
   }
@@ -106,8 +106,8 @@ try {
   transporter = nodemailer.createTransport({  // FIX: createTransport (não createTransporter)
     service: 'gmail',
     auth: {
-      user: process.env.EMAIL_USER || 'fallback@email.com',
-      pass: process.env.EMAIL_PASS || 'fallback',
+      user: process.env.EMAIL_USER || 'aldrye34@gmail.com',
+      pass: process.env.EMAIL_PASS || 'uywm uybi wicg ptmg',
     },
   });
   transporter.verify((error, success) => {

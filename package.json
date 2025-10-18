@@ -11,10 +11,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@supabase/supabase-js": "^2.75.0",
+    "@supabase/supabase-js": "^2.75.1",
     "@vercel/speed-insights": "^1.2.0",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "nodemailer": "^7.0.6"
-  }
+  },
+  "runArgs": [
+    "--env-file",
+    ".env"
+  ]
 }
