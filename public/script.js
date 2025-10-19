@@ -2,20 +2,21 @@ const form = document.getElementById('giftForm');
 const resultsContainer = document.getElementById('resultsContainer');
 const submitButton = form.querySelector('button[type="submit"]');
 
-// Função para esconder itens já reivindicados (mesma de antes)
+// Função para esconder itens já reivindicados (chamada após envio para atualizar form)
 function hideClaimedItems(data) {
   const itemRows = document.querySelectorAll('.item-row');
   itemRows.forEach(row => {
     const input = row.querySelector('.input-name');
     if (input && data[input.name] && data[input.name].length > 0) {
       row.style.display = 'none';
+      console.log('DEBUG: Escondendo item reivindicado:', input.name);
     } else if (input && !data[input.name]) {
       row.style.display = 'flex';
     }
   });
 }
 
-// Função para carregar TODOS os itens reivindicados (histórico completo - só quando solicitado)
+// Função para carregar histórico completo (só quando solicitado)
 async function fetchAllNames() {
   try {
     resultsContainer.innerHTML = '<p style="text-align: center; color: #a85a7a;">Carregando histórico completo...</p>';
@@ -31,6 +32,7 @@ async function fetchAllNames() {
       return data;
     }
     
+    // Mostra todos os reivindicados
     for (const [item, names] of Object.entries(data)) {
       const div = document.createElement('div');
       div.style.marginBottom = '1rem';
@@ -56,24 +58,21 @@ async function fetchAllNames() {
 
 // Função para mostrar APENAS os itens recém-reivindicados (do envio atual)
 function showRecentClaims(claimedItems) {
-  console.log('DEBUG: showRecentClaims chamado com:', claimedItems); // LOG PARA DEBUG
+  console.log('DEBUG: showRecentClaims chamado com:', claimedItems);
   
-  // Limpa a seção e adiciona título
   resultsContainer.innerHTML = '<h3 style="color: #a85a7a;">Lista de Nomes Registrados 🎉</h3>';
   
   if (!claimedItems || claimedItems.length === 0) {
-    console.log('DEBUG: Nenhum item reivindicado ou array vazio'); // LOG PARA DEBUG
+    console.log('DEBUG: Nenhum item reivindicado');
     resultsContainer.innerHTML += '<p style="text-align: center; color: #a85a7a; font-style: italic;">Nenhum item foi reivindicado neste envio.</p>';
     return;
   }
   
-  // Processa cada item reivindicado
   claimedItems.forEach(itemStr => {
-    console.log('DEBUG: Processando itemStr:', itemStr); // LOG PARA DEBUG
-    const parts = itemStr.split(': '); // Divide em item e nome
+    console.log('DEBUG: Processando:', itemStr);
+    const parts = itemStr.split(': ');
     const item = parts[0];
-    const name = parts.slice(1).join(': '); // Junta se houver ":" no nome
-    console.log('DEBUG: Item:', item, 'Name:', name); // LOG PARA DEBUG
+    const name = parts.slice(1).join(': ');
     
     const div = document.createElement('div');
     div.style.marginBottom = '1rem';
@@ -88,7 +87,7 @@ function showRecentClaims(claimedItems) {
     resultsContainer.appendChild(div);
   });
   
-  // Adiciona botão para ver histórico completo
+  // Botão para histórico
   const button = document.createElement('button');
   button.textContent = 'Ver Todos os Reivindicados';
   button.style.marginTop = '1rem';
@@ -102,7 +101,7 @@ function showRecentClaims(claimedItems) {
   resultsContainer.appendChild(button);
 }
 
-// Função handleSubmit (com logs extras para debug)
+// Função handleSubmit (mostra apenas novos e atualiza form)
 async function handleSubmit(e) {
   e.preventDefault();
   
@@ -132,16 +131,13 @@ async function handleSubmit(e) {
     });
     
     const response = await res.json();
-    console.log('DEBUG: Resposta completa da API:', response); // LOG PARA DEBUG
+    console.log('DEBUG: Resposta da API:', response);
     
     if (res.ok) {
       let successMsg = 'Itens reivindicados com sucesso! ';
       if (response.claimedItems && response.claimedItems.length > 0) {
         successMsg += `Reivindicados: ${response.claimedItems.join(', ')}. `;
-        console.log('DEBUG: Chamando showRecentClaims com:', response.claimedItems); // LOG PARA DEBUG
-        showRecentClaims(response.claimedItems); // MOSTRA NA SEÇÃO
-      } else {
-        console.log('DEBUG: claimedItems vazio ou undefined:', response.claimedItems); // LOG PARA DEBUG
+        showRecentClaims(response.claimedItems); // MOSTRA APENAS OS NOVOS NA SEÇÃO
       }
       if (response.alreadyClaimed && response.alreadyClaimed.length > 0) {
         successMsg += `Itens já tomados: ${response.alreadyClaimed.join(', ')}.`;
@@ -149,6 +145,14 @@ async function handleSubmit(e) {
       alert(successMsg + ' 🎉');
       
       form.reset();
+      
+      // ATUALIZA O FORM (esconde itens tomados) SEM MOSTRAR HISTÓRICO NA SEÇÃO
+      try {
+        const data = await fetch('/api/names').then(r => r.json());
+        hideClaimedItems(data);
+      } catch (err) {
+        console.error('Erro ao atualizar form:', err);
+      }
     } else {
       alert(`Erro ao reivindicar: ${response.error || 'Tente novamente.'} 😔`);
     }
@@ -166,4 +170,4 @@ async function handleSubmit(e) {
 // Adiciona event listener
 form.addEventListener('submit', handleSubmit);
 
-// NÃO carrega nada inicialmente – seção começa vazia
+// NÃO CARREGA NADA INICIALMENTE – SEÇÃO COMEÇA VAZIA
