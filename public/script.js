@@ -2,23 +2,23 @@ const form = document.getElementById('giftForm');
 const resultsContainer = document.getElementById('resultsContainer');
 const submitButton = form.querySelector('button[type="submit"]');
 
-// Função para esconder itens já reivindicados no formulário
+// Função para esconder itens já reivindicados (mesma de antes)
 function hideClaimedItems(data) {
   const itemRows = document.querySelectorAll('.item-row');
   itemRows.forEach(row => {
     const input = row.querySelector('.input-name');
     if (input && data[input.name] && data[input.name].length > 0) {
-      row.style.display = 'none'; // Esconde a linha inteira
-      row.style.opacity = '0.5'; // Opcional: deixa semi-transparente se quiser mostrar como "indisponível"
+      row.style.display = 'none';
+    } else if (input && !data[input.name]) {
+      row.style.display = 'flex';
     }
   });
-  console.log('Itens reivindicados escondidos no formulário.');
 }
 
-// Função para atualizar a lista de nomes do servidor E esconder itens
-async function fetchNames() {
+// Função para carregar TODOS os itens reivindicados (histórico completo - só quando solicitado)
+async function fetchAllNames() {
   try {
-    resultsContainer.innerHTML = '<p style="text-align: center; color: #a85a7a;">Carregando lista de nomes...</p>';
+    resultsContainer.innerHTML = '<p style="text-align: center; color: #a85a7a;">Carregando histórico completo...</p>';
     const res = await fetch('/api/names');
     if (!res.ok) {
       throw new Error('Erro na resposta do servidor');
@@ -28,7 +28,7 @@ async function fetchNames() {
     
     if (Object.keys(data).length === 0) {
       resultsContainer.innerHTML = '<p style="text-align: center; color: #a85a7a; font-style: italic;">Nenhum item reivindicado ainda. Seja o primeiro! 💕</p>';
-      return data; // Retorna data vazia para não esconder nada
+      return data;
     }
     
     for (const [item, names] of Object.entries(data)) {
@@ -45,28 +45,64 @@ async function fetchNames() {
       resultsContainer.appendChild(div);
     }
     
-    // Esconde itens reivindicados no form
     hideClaimedItems(data);
-    
     return data;
   } catch (err) {
-    console.error('Erro ao buscar nomes:', err);
-    resultsContainer.innerHTML = '<p style="text-align: center; color: #a85a7a;">Erro ao carregar nomes. Tente recarregar a página. 🔄</p>';
+    console.error('Erro ao buscar histórico:', err);
+    resultsContainer.innerHTML = '<p style="text-align: center; color: #a85a7a;">Erro ao carregar histórico. 🔄</p>';
     return {};
   }
 }
 
-// Função para esconder itens específicos após envio
-function hideSubmittedItems(entries) {
-  for (const [item] of Object.entries(entries)) {
-    const row = document.querySelector(`input[name="${item}"]`)?.closest('.item-row');
-    if (row) {
-      row.style.display = 'none';
-    }
+// Função para mostrar APENAS os itens recém-reivindicados (do envio atual)
+function showRecentClaims(claimedItems) {
+  console.log('DEBUG: showRecentClaims chamado com:', claimedItems); // LOG PARA DEBUG
+  
+  // Limpa a seção e adiciona título
+  resultsContainer.innerHTML = '<h3 style="color: #a85a7a;">Lista de Nomes Registrados 🎉</h3>';
+  
+  if (!claimedItems || claimedItems.length === 0) {
+    console.log('DEBUG: Nenhum item reivindicado ou array vazio'); // LOG PARA DEBUG
+    resultsContainer.innerHTML += '<p style="text-align: center; color: #a85a7a; font-style: italic;">Nenhum item foi reivindicado neste envio.</p>';
+    return;
   }
+  
+  // Processa cada item reivindicado
+  claimedItems.forEach(itemStr => {
+    console.log('DEBUG: Processando itemStr:', itemStr); // LOG PARA DEBUG
+    const parts = itemStr.split(': '); // Divide em item e nome
+    const item = parts[0];
+    const name = parts.slice(1).join(': '); // Junta se houver ":" no nome
+    console.log('DEBUG: Item:', item, 'Name:', name); // LOG PARA DEBUG
+    
+    const div = document.createElement('div');
+    div.style.marginBottom = '1rem';
+    div.style.padding = '0.8rem';
+    div.style.backgroundColor = '#fff8f8';
+    div.style.borderRadius = '8px';
+    div.style.borderLeft = '4px solid #f8c8d8';
+    div.innerHTML = `
+      <strong style="color: #a85a7a;">${item}:</strong> 
+      <span style="color: #7a3e5a; font-weight: bold;">Reivindicado por ${name} 🎉</span>
+    `;
+    resultsContainer.appendChild(div);
+  });
+  
+  // Adiciona botão para ver histórico completo
+  const button = document.createElement('button');
+  button.textContent = 'Ver Todos os Reivindicados';
+  button.style.marginTop = '1rem';
+  button.style.backgroundColor = '#f8c8d8';
+  button.style.border = 'none';
+  button.style.padding = '0.5rem 1rem';
+  button.style.borderRadius = '5px';
+  button.style.cursor = 'pointer';
+  button.style.color = '#7a3e5a';
+  button.onclick = () => fetchAllNames();
+  resultsContainer.appendChild(button);
 }
 
-// Função para enviar o formulário com feedback visual
+// Função handleSubmit (com logs extras para debug)
 async function handleSubmit(e) {
   e.preventDefault();
   
@@ -83,7 +119,6 @@ async function handleSubmit(e) {
     return;
   }
   
-  // Feedback visual: desabilita botão e mostra loading
   submitButton.disabled = true;
   submitButton.textContent = 'Reivindicando... 💌';
   submitButton.style.backgroundColor = '#a85a7a';
@@ -97,21 +132,23 @@ async function handleSubmit(e) {
     });
     
     const response = await res.json();
+    console.log('DEBUG: Resposta completa da API:', response); // LOG PARA DEBUG
     
     if (res.ok) {
-      // Sucesso: mostra mensagem personalizada
       let successMsg = 'Itens reivindicados com sucesso! ';
       if (response.claimedItems && response.claimedItems.length > 0) {
         successMsg += `Reivindicados: ${response.claimedItems.join(', ')}. `;
+        console.log('DEBUG: Chamando showRecentClaims com:', response.claimedItems); // LOG PARA DEBUG
+        showRecentClaims(response.claimedItems); // MOSTRA NA SEÇÃO
+      } else {
+        console.log('DEBUG: claimedItems vazio ou undefined:', response.claimedItems); // LOG PARA DEBUG
       }
       if (response.alreadyClaimed && response.alreadyClaimed.length > 0) {
         successMsg += `Itens já tomados: ${response.alreadyClaimed.join(', ')}.`;
       }
       alert(successMsg + ' 🎉');
       
-      form.reset(); // Limpa todos os campos
-      hideSubmittedItems(entries); // Esconde os itens enviados
-      fetchNames(); // Atualiza a lista e esconde outros se necessário
+      form.reset();
     } else {
       alert(`Erro ao reivindicar: ${response.error || 'Tente novamente.'} 😔`);
     }
@@ -119,7 +156,6 @@ async function handleSubmit(e) {
     console.error('Erro na conexão:', err);
     alert('Erro na conexão com o servidor. Verifique sua internet e tente novamente. 📡');
   } finally {
-    // Restaura o botão
     submitButton.disabled = false;
     submitButton.textContent = 'Reivindicar';
     submitButton.style.backgroundColor = '#f8c8d8';
@@ -127,11 +163,7 @@ async function handleSubmit(e) {
   }
 }
 
-// Adiciona o event listener ao form
+// Adiciona event listener
 form.addEventListener('submit', handleSubmit);
 
-// Atualiza a lista ao carregar a página (e esconde itens tomados)
-fetchNames();
-
-// Atualiza a lista a cada 30 segundos para mostrar reivindicações novas
-setInterval(fetchNames, 30000);
+// NÃO carrega nada inicialmente – seção começa vazia
