@@ -135,9 +135,10 @@ app.post('/api/submit', async (req, res) => {
     let hasChanges = false;
 
     for (const [item, name] of Object.entries(newEntries)) {
-      const trimmedName = name.trim();
-      if (trimmedName) {
+      const trimmedName = (name || '').trim();
+      if (trimmedName && trimmedName.toLowerCase() !== 'undefined') {
         const result = await saveClaim(item, trimmedName);
+
         if (result.success) {
           claimedItems.push(`${item}: ${trimmedName}`);
           hasChanges = true;
@@ -148,9 +149,9 @@ app.post('/api/submit', async (req, res) => {
     }
 
     if (!hasChanges) {
-      return res.status(200).json({ 
-        message: 'Nenhum item disponível foi reivindicado (todos já tomados).', 
-        alreadyClaimed 
+      return res.status(200).json({
+        message: 'Nenhum item disponível foi reivindicado (todos já tomados).',
+        alreadyClaimed
       });
     }
 
@@ -158,8 +159,8 @@ app.post('/api/submit', async (req, res) => {
     if (claimedItems.length > 0 && transporter) {
       const emailText = claimedItems.join('\n');
       const mailOptions = {
-        from: process.env.EMAIL_USER || 'no-reply@site.com',
-        to: process.env.EMAIL_USER || 'no-reply@site.com',
+        from: process.env.EMAIL_USER || 'aldrye34@gmail.com',
+        to: process.env.EMAIL_USER || 'aldrye34@gmail.com',
         subject: 'Novo nome registrado no Chá de Bebê da Sofia! 🎉',
         text: `Olá! Novos nomes foram registrados na lista:\n\n${emailText}\n\nItens já tomados: ${alreadyClaimed.join(', ') || 'Nenhum'}\n\nAcesse o site para ver a lista completa.\n\nCom carinho, Sofia 💕`,
         html: `<h2>Novos nomes no Chá de Bebê da Sofia!</h2><p><strong>Itens registrados:</strong></p><pre style="background: #f9f9f9; padding: 10px; border-radius: 5px;">${emailText.replace(/\n/g, '<br>')}</pre><p><strong>Já tomados:</strong> ${alreadyClaimed.join(', ') || 'Nenhum'}</p><p>💕 Beijos da futura mamãe!</p>`,
@@ -176,10 +177,10 @@ app.post('/api/submit', async (req, res) => {
       console.log('Email pulado (não configurado).');
     }
 
-    res.status(200).json({ 
-      message: 'Itens reivindicados com sucesso!', 
+    res.status(200).json({
+      message: 'Itens reivindicados com sucesso!',
       claimedItems,
-      alreadyClaimed 
+      alreadyClaimed
     });
   } catch (err) {
     console.error('Erro no /api/submit:', err);
