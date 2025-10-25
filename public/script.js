@@ -184,3 +184,35 @@ async function handleSubmit(e) {
 form.addEventListener('submit', handleSubmit);
 
 // NÃO CARREGA NADA INICIALMENTE – SEÇÃO COMEÇA VAZIA
+
+// --- Adicione este bloco no final do SEU ARQUIVO script.js ---
+
+// Função de Inicialização (roda ao carregar a página)
+async function init() {
+    console.log('DEBUG: Inicializando e filtrando a lista...');
+    try {
+        // Busca os nomes registrados (quais itens JÁ FORAM tomados)
+        const res = await fetch('/api/names'); 
+        if (!res.ok) {
+            console.error('Falha ao buscar dados iniciais de nomes.');
+            return;
+        }
+        const data = await res.json();
+        
+        // Filtra a lista principal no HTML, escondendo os itens reivindicados
+        hideClaimedItems(data);
+
+        // Opcional: Se quiser que a lista de nomes registrados (na seção inferior) 
+        // apareça imediatamente ao carregar:
+        fetchAllNames(); 
+
+    } catch (err) {
+        console.error('Erro de inicialização:', err);
+    }
+}
+
+// Garante que a função de inicialização rode quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', init); 
+
+// Caso o script esteja linkado no final do <body>, também pode chamar direto:
+init();
