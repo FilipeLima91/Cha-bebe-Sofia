@@ -1,7 +1,6 @@
 const form = document.getElementById('giftForm');
 const resultsContainer = document.getElementById('resultsContainer');
 const submitButton = form.querySelector('button[type="submit"]');
-const displayName = claimed_by && claimed_by !== 'undefined' ? claimed_by : 'disponível';
 
 // Função para esconder itens já reivindicados (chamada após envio para atualizar form)
 function hideClaimedItems(data) {
@@ -213,6 +212,3 @@ async function init() {
 
 // Garante que a função de inicialização rode quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', init); 
-
-// Caso o script esteja linkado no final do <body>, também pode chamar direto:
-init();
